@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
@@ -143,8 +144,49 @@ public:
     }
 };
 
-int main() {
 
-    return 0;
+// Menú opciones
+void menuPrincipal() {
+    vector<Paciente> pacientes;
+    vector<Medico> medicos;
+    vector<CitaMedica> citas;
+    Servicios servicios("Hospital central", true);
+
+    int opcion;
+    do {
+        cout << "--- Menu Principal ---\n";
+        cout << "1. Gestionar pacientes\n";
+        cout << "2. Gestionar medicos\n";
+        cout << "3. Gestionar citas medicas\n";
+        cout << "4. Servicios\n";
+        cout << "5. Salir\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+        case 1:
+            // menuPacientes(pacientes);
+            break;
+        case 2:
+            // menuMedicos(medicos);
+            break;
+        case 3:
+            // menuCitas(citas);
+            break;
+        case 4:
+            // menuServicios(servicios);
+            break;
+        case 5:
+            cout << "Saliendo del programa.\n";
+            break;
+        default:
+            cout << "Opción no válida.\n";
+        }
+    } while (opcion != 5);
 }
 
+// --- Función Principal ---
+int main() {
+    menuPrincipal();
+    return 0;
+}
