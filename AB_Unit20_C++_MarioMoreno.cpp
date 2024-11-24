@@ -16,8 +16,8 @@ public:
     string nombre;
     string apellidos;
     string dni;
-    string enfermedad;
     string fechaIngreso;
+    string enfermedad;
     vector<string> historialClinico;
 
     Paciente(string nombre, string apellidos, string dni, string fechaIngreso, string enfermedad = "")
@@ -144,6 +144,192 @@ public:
     }
 };
 
+// Submenús
+// Menú paciente
+void menuPacientes(vector<Paciente>& pacientes) {
+    int opcion;
+    do {
+        cout << "--- Menu Pacientes ---\n";
+        cout << "1. Registrar paciente\n";
+        cout << "2. Modificar datos del paciente\n";
+        cout << "3. Dar de alta medica\n";
+        cout << "4. Dar de baja medica\n";
+        cout << "5. Registrar historial clinico\n";
+        cout << "6. Mostrar historial clinico\n";
+        cout << "7. Reporte enfermedad cronica\n";
+        cout << "8. Volver al menu principal\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+        case 1: {
+            string nombre, apellidos, dni, fechaIngreso, enfermedad;
+            cout << "Ingrese nombre: ";
+            cin >> nombre;
+            cout << "Ingrese apellidos: ";
+            cin >> apellidos;
+            cout << "Ingrese DNI: ";
+            cin >> dni;
+            cout << "Ingrese fecha de ingreso: ";
+            cin >> fechaIngreso;
+            cout << "Ingrese enfermedad (opcional): ";
+            cin.ignore();
+            getline(cin, enfermedad);
+            pacientes.emplace_back(nombre, apellidos, dni, fechaIngreso, enfermedad);
+            cout << "Paciente registrado.\n";
+            break;
+        }
+        case 2: {
+            string dni;
+            cout << "Ingrese el DNI del paciente a modificar: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                it->modificarDatos();
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }
+        case 3: {
+            string dni;
+            cout << "Ingrese el DNI del paciente para dar de alta medica: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                it->altaMedica();
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }
+        case 4: {
+            string dni;
+            cout << "Ingrese el DNI del paciente para dar de baja medica: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                it->bajaMedica();
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }
+        case 5: {
+            string dni, registro;
+            cout << "Ingrese el DNI del paciente: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                cout << "Ingrese el registro para el historial clinico: ";
+                cin.ignore();
+                getline(cin, registro);
+                it->registrarHistorial(registro);
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }
+        case 6: {
+            string dni;
+            cout << "Ingrese el DNI del paciente: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                it->mostrarHistorial();
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }   
+        case 7: { 
+            string dni, enfermedadCronica, descripcion;
+            cout << "Ingrese el DNI del paciente: ";
+            cin >> dni;
+            auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
+            if (it != pacientes.end()) {
+                cout << "Paciente encontrado: " << it->nombre << " " << it->apellidos << "\n";
+
+                if (it->enfermedad.empty()) {
+                    cout << "El paciente no tiene una enfermedad registrada.\n";
+                    break;
+                }
+                cout << "Enfermedad actual registrada: " << it->enfermedad << "\n";
+                cout << "¿Desea modificar esta enfermedad? (S/N): ";
+                char opcionEnfermedad;
+                cin >> opcionEnfermedad;
+                if (toupper(opcionEnfermedad) == 'S') {
+                    cout << "Ingrese el nuevo nombre de la enfermedad cronica: ";
+                    cin.ignore();
+                    getline(cin, enfermedadCronica);
+                    it->enfermedad = enfermedadCronica;
+                }
+                else {
+                    enfermedadCronica = it->enfermedad; 
+                }
+
+                bool descripcionExistente = false;
+                for (auto& registro : it->historialClinico) {
+                    if (registro.find("Enfermedad cronica registrada: " + it->enfermedad) != string::npos) {
+                        cout << "Descripcion actual encontrada en el historial:\n" << registro << "\n";
+                        descripcionExistente = true;
+                        cout << "¿Desea modificar la descripcion? (S/N): ";
+                        char opcionModificarDescripcion;
+                        cin >> opcionModificarDescripcion;
+                        if (toupper(opcionModificarDescripcion) == 'S') {
+                            cout << "Ingrese la nueva descripcion de la enfermedad: ";
+                            cin.ignore();
+                            getline(cin, descripcion);
+                            registro = "Enfermedad cronica registrada: " + enfermedadCronica + " - " + descripcion; // Modifica el historial directamente
+                            cout << "Nueva descripcion registrada exitosamente.\n";
+                            cout << "Nueva descripcion: " << registro << "\n";
+                        }
+                        else {
+                            cout << "Manteniendo la descripcion actual.\n";
+                        }
+                        break;
+                    }
+                }
+
+                if (!descripcionExistente) {
+                    cout << "No hay descripcion actual de la enfermedad.\n";
+                    cout << "¿Desea agregar una descripcion? (S/N): ";
+                    char opcionDescripcion;
+                    cin >> opcionDescripcion;
+                    if (toupper(opcionDescripcion) == 'S') {
+                        cout << "Ingrese la descripcion de la enfermedad: ";
+                        cin.ignore();
+                        getline(cin, descripcion);
+                        it->registrarHistorial("Enfermedad cronica registrada: " + enfermedadCronica + " - " + descripcion);
+                        cout << "Descripción registrada.\n";
+                        cout << "Nueva descripción: enfermedad cronica" << enfermedadCronica << " : " << descripcion << "\n";
+                    }
+                    else {
+                        it->registrarHistorial("Enfermedad cronica registrada: " + enfermedadCronica);
+                        cout << "Enfermedad registrada sin descripción adicional.\n";
+                        break;
+                    }
+                }
+            }
+            else {
+                cout << "Paciente no encontrado.\n";
+            }
+            break;
+        }
+
+        case 8:
+            break;
+        default:
+            cout << "Opción no válida.\n";
+        }
+    } while (opcion != 8);
+}
+
 
 // Menú opciones
 void menuPrincipal() {
@@ -165,16 +351,16 @@ void menuPrincipal() {
 
         switch (opcion) {
         case 1:
-            // menuPacientes(pacientes);
+            menuPacientes(pacientes);
             break;
         case 2:
-            // menuMedicos(medicos);
+           // menuMedicos(medicos);
             break;
         case 3:
-            // menuCitas(citas);
+           // menuCitas(citas);
             break;
         case 4:
-            // menuServicios(servicios);
+           // menuServicios(servicios);
             break;
         case 5:
             cout << "Saliendo del programa.\n";
@@ -185,7 +371,7 @@ void menuPrincipal() {
     } while (opcion != 5);
 }
 
-// --- Función Principal ---
+// Main
 int main() {
     menuPrincipal();
     return 0;
