@@ -23,11 +23,11 @@ public:
     Paciente(string nombre, string apellidos, string dni, string fechaIngreso, string enfermedad = "")
         : nombre(nombre), apellidos(apellidos), dni(dni), fechaIngreso(fechaIngreso), enfermedad(enfermedad) {}
 
-    void altaMedica() {
+    void altaPaciente() {
         cout << "El paciente " << nombre << " ha recibido el alta medica.\n";
     }
 
-    void bajaMedica() {
+    void bajaPaciente() {
         cout << "El paciente " << nombre << " ha sido dado de baja.\n";
     }
  
@@ -64,8 +64,28 @@ public:
     bool disponible;
     vector<Paciente*> pacientesAsignados;
 
-    Medico(string nombre, string apellidos, string dni, string especialidad, bool disponible)
-        : nombre(nombre), apellidos(apellidos), dni(dni), especialidad(especialidad), disponible(disponible) {}
+    Medico(string nombre, string apellidos, string dni, bool disponible)
+        : nombre(nombre), apellidos(apellidos), dni(dni), disponible(disponible) {}
+
+    void altaMedico() {
+        if (!disponible) {
+            disponible = true;
+            cout << "El medico " << nombre << apellidos << " ha sido dado de alta y ahora está disponible.\n";
+        }
+        else {
+            cout << "El medico " << nombre << apellidos << " ha sido dado de alta.\n";
+        }
+    }
+
+    void bajaMedico() {
+        if (disponible) {
+            disponible = false;
+            cout << "El medico " << nombre << apellidos << " ha sido dado de baja y ahora no esta disponible.\n";
+        }
+        else {
+            cout << "El médico " << nombre << apellidos << " ha sido dado de baja.\n";
+        }
+    }
 
     void modificarDatos() {
         cout << "Modificar datos del medico.\n";
@@ -75,18 +95,11 @@ public:
         cin >> apellidos;
         cout << "Nuevo DNI: ";
         cin >> dni;
-        cout << "Nueva especialidad: ";
-        cin >> especialidad;
-        cout << "¿Está disponible? (1 para si, 0 para no): ";
+        cout << "Medico disponible (1 para si, 0 para no): ";
         cin >> disponible;
     }
-
-    void listarPacientes() {
-        cout << "Pacientes asignados a " << nombre << ":\n";
-        for (const auto& paciente : pacientesAsignados)
-            cout << "- " << paciente->nombre << "\n";
-    }
 };
+
 
 class CitaMedica {
 public:
@@ -198,7 +211,7 @@ void menuPacientes(vector<Paciente>& pacientes) {
             cin >> dni;
             auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
             if (it != pacientes.end()) {
-                it->altaMedica();
+                it->altaPaciente();
             }
             else {
                 cout << "Paciente no encontrado.\n";
@@ -211,7 +224,7 @@ void menuPacientes(vector<Paciente>& pacientes) {
             cin >> dni;
             auto it = find_if(pacientes.begin(), pacientes.end(), [&dni](Paciente& p) { return p.dni == dni; });
             if (it != pacientes.end()) {
-                it->bajaMedica();
+                it->bajaPaciente();
             }
             else {
                 cout << "Paciente no encontrado.\n";
@@ -330,6 +343,161 @@ void menuPacientes(vector<Paciente>& pacientes) {
     } while (opcion != 8);
 }
 
+void menuMedicos(vector<Medico>& medicos) {
+    int opcion;
+    do {
+        cout << "--- Menu Medicos ---\n";
+        cout << "1. Registrar medico\n";
+        cout << "2. Modificar datos del medico\n";
+        cout << "3. Asignar especialidad\n";
+        cout << "4. Listado medicos disponibles\n";
+        cout << "5. Listado medicos no disponibles\n";
+        cout << "6. Dar de alta\n";
+        cout << "7. Dar de baja\n";
+        cout << "8. Volver al menu principal\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+        case 1: {
+            string nombre, apellidos, dni, especialidad;
+            bool disponible;
+            cout << "Ingrese nombre: ";
+            cin >> nombre;
+            cout << "Ingrese apellidos: ";
+            cin >> apellidos;
+            cout << "Ingrese DNI: ";
+            cin >> dni;
+            cout << "Medico disponible (1 para si, 0 para no): ";
+            cin >> disponible;
+            medicos.emplace_back(nombre, apellidos, dni, disponible);
+            cout << "Medico registrado.\n";
+            break;
+        }
+        case 2: {
+            string dni;
+            cout << "Ingrese el DNI del medico a modificar: ";
+            cin >> dni;
+            auto it = find_if(medicos.begin(), medicos.end(), [&dni](Medico& m) { return m.dni == dni; });
+            if (it != medicos.end()) {
+                it->modificarDatos();
+            }
+            else {
+                cout << "Medico no encontrado.\n";
+            }
+            break;
+        }
+        case 3: {
+            string dni;
+            cout << "Ingrese el DNI del medico para asignar especialidad: ";
+            cin >> dni;
+            auto it = find_if(medicos.begin(), medicos.end(), [&dni](Medico& m) { return m.dni == dni; });
+            if (it != medicos.end()) {
+                cout << "Seleccione la especialidad:\n";
+                vector<string> especialidades = {
+                    "Alergologia", "Anatomia Patologica", "Anestesiologia y Reanimacion",
+                    "Angiologia y Cirugia Vascular", "Aparato Digestivo", "Cardiologia",
+                    "Cirugia Cardiovascular", "Cirugia General y del Aparato Digestivo",
+                    "Cirugia Oral y Maxilofacial", "Cirugia Ortopedica y Traumatologia",
+                    "Cirugia Pediatrica", "Cirugia Plastica, Estetica y Reparadora",
+                    "Cirugía Toracica", "Dermatologia Medico-Quirurgica y Venereologia",
+                    "Endocrinologia y Nutricion", "Farmacologia Clinica", "Geriatria",
+                    "Hematologia y Hemoterapia", "Inmunologia", "Medicina del Trabajo",
+                    "Medicina Familiar y Comunitaria", "Medicina Fisica y Rehabilitacion",
+                    "Medicina Intensiva", "Medicina Interna", "Medicina Nuclear",
+                    "Medicina Preventiva y Salud Publica", "Nefrologia", "Neumologia",
+                    "Neurocirugia", "Neurofisiologia Clinica", "Neurologia",
+                    "Obstetricia y Ginecologia", "Oftalmologia", "Oncologia Medica",
+                    "Oncología Radioterapica", "Otorrinolaringologia",
+                    "Pediatria y sus Areas Especificas", "Psiquiatria", "Radiodiagnostico",
+                    "Reumatologia", "Urologia"
+                };
+                for (size_t i = 0; i < especialidades.size(); ++i) {
+                    cout << i + 1 << ". " << especialidades[i] << '\n';
+                }
+                int seleccion;
+                cout << "Seleccione una opcion (1-" << especialidades.size() << "): ";
+                cin >> seleccion;
+                if (seleccion >= 1 && seleccion <= especialidades.size()) {
+                    it->especialidad = especialidades[seleccion - 1];
+                    cout << "Especialidad asignada: " << it->especialidad << '\n';
+                }
+                else {
+                    cout << "Opcion no valida.\n";
+                }
+            }
+            else {
+                cout << "Medico no registrado.\n";
+            }
+            break;
+        }
+        case 4: {
+            vector<Medico*> disponibles;
+            for (auto& medico : medicos) {
+                if (medico.disponible) {
+                    disponibles.push_back(&medico);
+                }
+            }
+            sort(disponibles.begin(), disponibles.end(),
+                [](Medico* a, Medico* b) { return a->especialidad < b->especialidad; });
+            cout << "--- Lista de medicos disponibles ---\n";
+            for (auto* medico : disponibles) {
+                cout << medico->nombre << " " << medico->apellidos
+                    << " - Especialidad: " << medico->especialidad << '\n';
+            }
+            break;
+        }
+        case 5: {
+            vector<Medico*> noDisponibles;
+            for (auto& medico : medicos) {
+                if (!medico.disponible) {
+                    noDisponibles.push_back(&medico);
+                }
+            }
+            sort(noDisponibles.begin(), noDisponibles.end(),
+                [](Medico* a, Medico* b) { return a->especialidad < b->especialidad; });
+            cout << "--- Lista de Medicos No Disponibles ---\n";
+            for (auto* medico : noDisponibles) {
+                cout << medico->nombre << " " << medico->apellidos
+                    << " - Especialidad: " << medico->especialidad << '\n';
+            }
+            break;
+        }
+
+        case 6: {
+            string dni;
+            cout << "Ingrese el DNI del medico para dar de alta: ";
+            cin >> dni;
+            auto it = find_if(medicos.begin(), medicos.end(), [&dni](Medico& m) { return m.dni == dni; });
+            if (it != medicos.end()) {
+                it->altaMedico();
+            }
+            else {
+                cout << "Medico no encontrado.\n";
+            }
+            break;
+        }
+        case 7: {
+            string dni;
+            cout << "Ingrese el DNI del medico para dar de baja: ";
+            cin >> dni;
+            auto it = find_if(medicos.begin(), medicos.end(), [&dni](Medico& m) { return m.dni == dni; });
+            if (it != medicos.end()) {
+                it->bajaMedico();
+            }
+            else {
+                cout << "Medico no encontrado.\n";
+            }
+            break;
+        }
+        case 8:
+            break;
+        default:
+            cout << "Opción no valida.\n";
+        }
+    } while (opcion != 8);
+}
+
 
 // Menú opciones
 void menuPrincipal() {
@@ -354,7 +522,7 @@ void menuPrincipal() {
             menuPacientes(pacientes);
             break;
         case 2:
-           // menuMedicos(medicos);
+            menuMedicos(medicos);
             break;
         case 3:
            // menuCitas(citas);
