@@ -12,7 +12,7 @@ endif()
 project ("AB_Unit20_C++_MarioMoreno")
 
 # Agregue un origen al ejecutable de este proyecto.
-add_executable (AB_Unit20_C++_MarioMoreno "AB_Unit20_C++_MarioMoreno.cpp" "AB_Unit20_C++_MarioMoreno.h")
+add_executable (AB_Unit20_C++_MarioMoreno "AB_Unit20_C++_MarioMoreno.cpp" "AB_Unit20_C++_MarioMoreno.h" "Paciente.cpp" "Paciente.h" "Medico.cpp" "Medico.h" "CitaMedica.cpp" "CitaMedica.h" "Servicios.cpp" "Servicios.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AB_Unit20_C++_MarioMoreno PROPERTY CXX_STANDARD 20)
