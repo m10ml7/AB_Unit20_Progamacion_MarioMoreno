@@ -11,9 +11,9 @@
 
 using namespace std;
 
-HospitalController::HospitalController() : servicios("Hospital Central", true) {}
+GestionHospital::GestionHospital() : servicios() {}
 
-void HospitalController::menuPacientes() {
+void GestionHospital::menuPacientes() {
     short int opcion;
     do {
         cout << "--- Menu Pacientes ---\n";
@@ -199,7 +199,7 @@ void HospitalController::menuPacientes() {
     } while (opcion != 8);
 }
 
-void HospitalController::menuMedicos() {
+void GestionHospital::menuMedicos() {
     short int opcion;
     do {
         cout << "--- Menu Medicos ---\n";
@@ -383,7 +383,7 @@ string generarIDCita(Paciente* paciente) {
     return idCita;
 }
 
-void HospitalController::menuCitas() {
+void GestionHospital::menuCitas() {
     short int opcion;
     do {
         cout << "--- Menu citas ---\n";
@@ -652,12 +652,42 @@ void HospitalController::menuCitas() {
     } while (opcion != 6);
 }
 
-void HospitalController::menuServicios() {
-    cout << "--- Menu Servicios ---\n";
-    // Implement options for managing hospital services.
+void GestionHospital::menuServicios() {
+    Servicios servicios;
+    int opcion;
+    do {
+        cout << "--- Menu Servicios ---\n";
+        cout << "1. Listar citas pendientes por especialidad\n";
+        cout << "2. Listar pacientes atendidos por rango de fechas\n";
+        cout << "3. Volver al menu principal\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+        case 1:
+            // Listar citas pendientes por especialidad
+            servicios.listarCitasPendientesPorEspecialidad();
+            break;
+        case 2: {
+            // Listar pacientes atendidos por rango de fechas
+            string fechaInicio, fechaFin;
+            cout << "Ingrese la fecha de inicio (YYYY-MM-DD): ";
+            cin >> fechaInicio;
+            cout << "Ingrese la fecha de fin (YYYY-MM-DD): ";
+            cin >> fechaFin;
+            servicios.listarPacientesAtendidosPorFechas(fechaInicio, fechaFin);
+            break;
+        }
+        case 3:
+            cout << "Volviendo al menu principal...\n";
+            break;
+        default:
+            cout << "Opcion no valida. Intente de nuevo.\n";
+        }
+    } while (opcion != 3);
 }
 
-void HospitalController::menuPrincipal() {
+void GestionHospital::menuPrincipal() {
     int opcion;
     do {
         cout << "--- Menu Principal ---\n";
@@ -692,7 +722,7 @@ void HospitalController::menuPrincipal() {
 }
 
 int main() {
-    HospitalController hospital;
+    GestionHospital hospital;
     hospital.menuPrincipal();
     return 0;
 }

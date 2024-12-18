@@ -1,6 +1,6 @@
 ﻿// AB_Unit20_C++_MarioMoreno.h
-#ifndef HOSPITAL_CONTROLLER_H
-#define HOSPITAL_CONTROLLER_H
+#ifndef GESTION_HOSPITAL_H
+#define GESTION_HOSPITAL_H
 
 #include "Paciente.h"
 #include "Medico.h"
@@ -8,12 +8,13 @@
 #include "Servicios.h"
 #include <vector>
 
-class HospitalController {
+class GestionHospital {
 private:
     std::vector<Paciente> pacientes;
     std::vector<Medico> medicos;
     std::vector<CitaMedica> citas;
     Servicios servicios;
+    
 
     void menuPacientes();
     void menuMedicos();
@@ -21,8 +22,9 @@ private:
     void menuServicios();
 
 public:
-    HospitalController();
+    GestionHospital();
     void menuPrincipal();
 };
 
-#endif // HOSPITAL_CONTROLLER_H
+#endif // GESTION_HOSPITAL_H
+

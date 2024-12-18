@@ -1,18 +1,17 @@
-// Servicios.h
 #ifndef SERVICIOS_H
 #define SERVICIOS_H
-#include <string>
+
 #include <vector>
 #include "CitaMedica.h"
 
 class Servicios {
 public:
-    std::string nombre;
-    bool disponibilidad;
-    std::vector<CitaMedica> citas;
+    std::vector<CitaMedica> citas; // Lista de citas médicas
 
-    Servicios(std::string nombre, bool disponibilidad);
-    void reportarServicios();
+    Servicios(); // Constructor por defecto
+
+    void listarCitasPendientesPorEspecialidad();
+    void listarPacientesAtendidosPorFechas(const std::string& fechaInicio, const std::string& fechaFin);
 };
 
 #endif // SERVICIOS_H
